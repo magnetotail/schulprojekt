@@ -146,4 +146,13 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle
+
 # End of https://www.gitignore.io/api/eclipse,intellij

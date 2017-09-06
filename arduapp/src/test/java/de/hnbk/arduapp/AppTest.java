@@ -1,4 +1,4 @@
-package de.hnbk.k.nwi.webgraph;
+package de.hnbk.arduapp;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

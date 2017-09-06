@@ -1,4 +1,4 @@
-package de.hnbk.k.nwi.webgraph;
+package de.hnbk.arduapp;
 
 /**
  * Hello world!

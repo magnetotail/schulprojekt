@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="arduapp (1)" />
+        <module name="arduapp (2)" />
+        <module name="maven-archiver" />
+        <module name="webgraph" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="arduapp (1)" target="1.5" />
+      <module name="arduapp (2)" target="1.5" />
+      <module name="main" target="1.5" />
+      <module name="maven-archiver" target="1.5" />
+      <module name="webgraph" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

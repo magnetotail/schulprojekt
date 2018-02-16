@@ -13,14 +13,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Messung")
-public class Measurement {
+public class Measurement implements DaoInterface {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int MeasurementID;
+	int measurementID;
 
 	@Column(nullable = false)
-	Timestamp MeasurementTime;
+	Timestamp measurementTime;
 	
 	
 	@ManyToOne(targetEntity = Client.class)
@@ -28,19 +28,19 @@ public class Measurement {
 	Client client;
 	
 	public int getMeasurementID() {
-		return MeasurementID;
+		return measurementID;
 	}
 
 	public void setMeasurementID(int measurementID) {
-		MeasurementID = measurementID;
+		this.measurementID = measurementID;
 	}
 
 	public Timestamp getMeasurementTime() {
-		return MeasurementTime;
+		return measurementTime;
 	}
 
 	public void setMeasurementTime(Timestamp measurementTime) {
-		MeasurementTime = measurementTime;
+		this.measurementTime = measurementTime;
 	}
 
 }

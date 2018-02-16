@@ -1,4 +1,4 @@
-package de.hnbk.arduapp;
+package de.hnbk.arduapp.gui.view;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -7,6 +7,11 @@ import javax.swing.JLabel;
 import info.clearthought.layout.TableLayout;
 
 public class MainFrame extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3530704208955662203L;
 
 	private JLabel roomLabel;
 

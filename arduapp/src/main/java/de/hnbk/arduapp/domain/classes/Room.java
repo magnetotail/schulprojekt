@@ -5,11 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Raum")
-public class Room {
+public class Room implements DaoInterface, Describable{
 
 	@Id
 	@Column(name = "RaumID")
@@ -19,6 +21,10 @@ public class Room {
 	@Column(length = 50, nullable = false)
 	String description;
 
+	@ManyToOne(targetEntity = Location.class)
+	@JoinColumn(name = "LocationID", nullable = false)
+	Location location;
+	
 	@Override
 	public String toString() {
 		return "ID: " + RoomId + " Name: " + description;
@@ -38,6 +44,19 @@ public class Room {
 
 	public void setRoomId(int roomId) {
 		RoomId = roomId;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	@Override
+	public String getDescriptionCheckRegex() {
+		return ".*";
 	}
 
 }

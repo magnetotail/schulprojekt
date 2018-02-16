@@ -7,13 +7,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-public class GetNetworkAddress {
-	
-	public enum AddressType{
-		MAC,IP;
+public class AddressResolver {
+
+	public enum AddressType {
+		MAC, IP;
 	}
 
-	public static String GetAddress(AddressType addressType) {
+	public static String getAddress(AddressType addressType) {
 		String address = "";
 		InetAddress lanIp = null;
 		try {
@@ -25,7 +25,9 @@ public class GetNetworkAddress {
 			while (net.hasMoreElements()) {
 				NetworkInterface element = net.nextElement();
 				Enumeration<InetAddress> addresses = element.getInetAddresses();
-
+				if(element.getHardwareAddress() == null) {
+					continue;
+				}
 				while (addresses.hasMoreElements() && element.getHardwareAddress().length > 0
 						&& !isVMMac(element.getHardwareAddress())) {
 					InetAddress ip = addresses.nextElement();

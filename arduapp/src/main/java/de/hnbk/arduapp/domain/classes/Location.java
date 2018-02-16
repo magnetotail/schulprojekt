@@ -8,20 +8,22 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Messart")
-public class MeasurementType implements DaoInterface, Describable {
-
+@Table(name = "Standort")
+public class Location implements DaoInterface, Describable {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "MessartID")
-	int MeasurementTypeID;
-
-	@Column(name = "Bezeichnung")
+	int locationID;
+	
+	@Column(name = "Bezeichnung", nullable = false, unique = true)
 	String description;
 
-	@Override
-	public String toString() {
-		return "ID: " + MeasurementTypeID + " Bezeichnung: " + description;
+	public int getLocationID() {
+		return locationID;
+	}
+
+	public void setLocationID(int locationID) {
+		this.locationID = locationID;
 	}
 
 	public String getDescription() {
@@ -30,14 +32,6 @@ public class MeasurementType implements DaoInterface, Describable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public int getMeasurementTypeID() {
-		return MeasurementTypeID;
-	}
-
-	public void setMeasurementTypeID(int measurementTypeID) {
-		MeasurementTypeID = measurementTypeID;
 	}
 
 	@Override

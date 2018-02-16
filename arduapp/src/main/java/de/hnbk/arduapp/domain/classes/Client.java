@@ -13,19 +13,17 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Client")
-public class Client implements Serializable{
+public class Client implements DaoInterface , Describable{
 	
-	private static final long serialVersionUID = 5221781840460585049L;
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	int ClientID;
+	int clientID;
 	
 	@Column(nullable = false, length = 17, unique = true)
-	String ClientMAC;
+	String clientMac;
 	
 	@Column(length = 255, name = "ClientBeschreibung")
-	String ClientDescription;
+	String description;
 
 	@ManyToOne(targetEntity = Room.class)
 	@JoinColumn(name = "RaumID", nullable = false)
@@ -38,31 +36,31 @@ public class Client implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "ID: " + ClientID + " MAC: " + ClientMAC + " Beschreibung: " + ClientDescription + " Raum: " + room + " Messart: " + measurementType;
+		return "ID: " + clientID + " MAC: " + clientMac + " Beschreibung: " + description + " Raum: " + room + " Messart: " + measurementType;
 	}
 
 	public int getClientID() {
-		return ClientID;
+		return clientID;
 	}
 
 	public void setClientID(int clientID) {
-		ClientID = clientID;
+		this.clientID = clientID;
 	}
 
-	public String getClientMAC() {
-		return ClientMAC;
+	public String getClientMac() {
+		return clientMac;
 	}
 
-	public void setClientMAC(String clientMAC) {
-		ClientMAC = clientMAC;
+	public void setClientMac(String clientMAC) {
+		this.clientMac = clientMAC;
 	}
 
-	public String getClientDescription() {
-		return ClientDescription;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setClientDescription(String clientDescription) {
-		ClientDescription = clientDescription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Room getRoom() {
@@ -79,6 +77,11 @@ public class Client implements Serializable{
 
 	public void setMeasurementType(MeasurementType measurementType) {
 		this.measurementType = measurementType;
+	}
+
+	@Override
+	public String getDescriptionCheckRegex() {
+		return ".*";
 	}
 	
 }

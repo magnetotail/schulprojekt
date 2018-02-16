@@ -1,4 +1,4 @@
-package de.hnbk.arduapp;
+package de.hnbk.arduapp.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;

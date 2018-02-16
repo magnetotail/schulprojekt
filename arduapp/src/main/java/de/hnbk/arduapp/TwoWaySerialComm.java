@@ -76,9 +76,6 @@ public class TwoWaySerialComm {
 
     public static void main ( String[] args )
     {
-
-    	
-    	RepositoryFactorySupport factorySupport = new RepoFacSup();
     	Enumeration<CommPortIdentifier> foo = CommPortIdentifier.getPortIdentifiers();
     	while(foo.hasMoreElements()) {
     		System.out.println(foo.nextElement().getName());

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Messung")
-public class Measurement implements DaoInterface {
+public class Measurement {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

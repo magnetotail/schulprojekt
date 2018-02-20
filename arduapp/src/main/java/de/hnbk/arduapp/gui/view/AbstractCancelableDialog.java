@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,6 +27,7 @@ public abstract class AbstractCancelableDialog extends JDialog {
 	private JButton cancelButton;
 
 	private JPanel componentPanelPanel;
+	private List<CloseAction> closeActionList = new ArrayList<CloseAction>();
 
 	public AbstractCancelableDialog(JFrame owner) {
 		super(owner);
@@ -96,8 +99,17 @@ public abstract class AbstractCancelableDialog extends JDialog {
 		addComponentPanel(componentPanel, TableLayout.PREFERRED);
 	}
 	
+	public void addCloseAction(CloseAction action) {
+		closeActionList.add(action);
+	}
+	
+	public void removeCloseAction(CloseAction action) {
+		closeActionList.remove(action);
+	}
+	
 	protected void addComponentPanel(JPanel componentPanel, double rowHeight) {
 		TableLayout componentPanelPanelLayout = (TableLayout) componentPanelPanel.getLayout();
+		componentPanelPanelLayout.insertRow(1, GuiConstants.COMPONENT_GAP);
 		componentPanelPanelLayout.insertRow(1, rowHeight);
 		componentPanelPanel.add(componentPanel, "1," + 1);
 		componentPanelPanelLayout.layoutContainer(this);
@@ -105,9 +117,12 @@ public abstract class AbstractCancelableDialog extends JDialog {
 	}
 
 	private void close(boolean wasCancelled) {
+		this.wasCanceled = wasCancelled;
+		for(CloseAction action : closeActionList) {
+			action.performAction();
+		}
 		setVisible(false);
 		dispose();
-		this.wasCanceled = wasCancelled;
 
 	}
 

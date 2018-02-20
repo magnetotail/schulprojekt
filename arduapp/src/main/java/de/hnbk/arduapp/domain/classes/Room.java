@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Raum")
-public class Room implements DaoInterface, Describable{
+public class Room implements SimpleDaoInterface, Describable{
 
 	@Id
 	@Column(name = "RaumID")
@@ -57,6 +57,11 @@ public class Room implements DaoInterface, Describable{
 	@Override
 	public String getDescriptionCheckRegex() {
 		return ".*";
+	}
+
+	@Override
+	public String getDescriptionLabelText() {
+		return "Raum";
 	}
 
 }

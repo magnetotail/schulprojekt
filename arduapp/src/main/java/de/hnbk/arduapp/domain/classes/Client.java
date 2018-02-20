@@ -13,30 +13,30 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Client")
-public class Client implements DaoInterface , Describable{
-	
+public class Client implements SimpleDaoInterface, Describable {
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	int clientID;
-	
+
 	@Column(nullable = false, length = 17, unique = true)
 	String clientMac;
-	
+
 	@Column(length = 255, name = "ClientBeschreibung")
 	String description;
 
 	@ManyToOne(targetEntity = Room.class)
 	@JoinColumn(name = "RaumID", nullable = false)
 	Room room;
-	
+
 	@ManyToOne(targetEntity = MeasurementType.class)
 	@JoinColumn(name = "MessartID", nullable = false)
 	MeasurementType measurementType;
-	
-	
+
 	@Override
 	public String toString() {
-		return "ID: " + clientID + " MAC: " + clientMac + " Beschreibung: " + description + " Raum: " + room + " Messart: " + measurementType;
+		return "ID: " + clientID + " MAC: " + clientMac + " Beschreibung: " + description + " Raum: " + room
+				+ " Messart: " + measurementType;
 	}
 
 	public int getClientID() {
@@ -83,5 +83,9 @@ public class Client implements DaoInterface , Describable{
 	public String getDescriptionCheckRegex() {
 		return ".*";
 	}
-	
+
+	@Override
+	public String getDescriptionLabelText() {
+		return "Client";
+	}
 }

@@ -9,8 +9,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Standort")
-public class Location implements DaoInterface, Describable {
 	
+public class Location implements SimpleDaoInterface, Describable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int locationID;
@@ -37,6 +37,11 @@ public class Location implements DaoInterface, Describable {
 	@Override
 	public String getDescriptionCheckRegex() {
 		return ".*";
+	}
+
+	@Override
+	public String getDescriptionLabelText() {
+		return "Standort";
 	}
 
 }

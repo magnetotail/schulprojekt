@@ -9,19 +9,19 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Messart")
-public class MeasurementType implements DaoInterface, Describable {
+public class MeasurementType implements SimpleDaoInterface, Describable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "MessartID")
-	int MeasurementTypeID;
+	int measurementTypeId;
 
 	@Column(name = "Bezeichnung")
 	String description;
 
 	@Override
 	public String toString() {
-		return "ID: " + MeasurementTypeID + " Bezeichnung: " + description;
+		return description;
 	}
 
 	public String getDescription() {
@@ -32,17 +32,22 @@ public class MeasurementType implements DaoInterface, Describable {
 		this.description = description;
 	}
 
-	public int getMeasurementTypeID() {
-		return MeasurementTypeID;
+	public int getMeasurementTypeId() {
+		return measurementTypeId;
 	}
 
-	public void setMeasurementTypeID(int measurementTypeID) {
-		MeasurementTypeID = measurementTypeID;
+	public void setMeasurementTypeId(int measurementTypeId) {
+		this.measurementTypeId = measurementTypeId;
 	}
 
 	@Override
 	public String getDescriptionCheckRegex() {
 		return ".*";
+	}
+	
+	@Override
+	public String getDescriptionLabelText() {
+		return "Messart";
 	}
 
 }

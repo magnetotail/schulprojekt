@@ -13,17 +13,19 @@ import javax.persistence.Table;
 public class Location implements SimpleDaoInterface, Describable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int locationID;
+	int id;
 	
 	@Column(name = "Bezeichnung", nullable = false, unique = true)
 	String description;
 
-	public int getLocationID() {
-		return locationID;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setLocationID(int locationID) {
-		this.locationID = locationID;
+	@Override
+	public void setId(int locationID) {
+		this.id = locationID;
 	}
 
 	public String getDescription() {
@@ -32,6 +34,11 @@ public class Location implements SimpleDaoInterface, Describable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Override
+	public String toString() {
+		return description;
 	}
 
 	@Override

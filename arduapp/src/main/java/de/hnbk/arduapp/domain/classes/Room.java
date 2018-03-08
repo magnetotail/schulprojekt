@@ -11,12 +11,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Raum")
-public class Room implements SimpleDaoInterface, Describable{
+public class Room implements SimpleDaoInterface, Describable {
 
 	@Id
 	@Column(name = "RaumID")
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	int RoomId;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	int id;
 
 	@Column(length = 50, nullable = false)
 	String description;
@@ -24,12 +24,12 @@ public class Room implements SimpleDaoInterface, Describable{
 	@ManyToOne(targetEntity = Location.class)
 	@JoinColumn(name = "LocationID", nullable = false)
 	Location location;
-	
+
 	@Override
 	public String toString() {
-		return "ID: " + RoomId + " Name: " + description;
+		return "Name: " + description + "Standort: " + location;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -38,12 +38,14 @@ public class Room implements SimpleDaoInterface, Describable{
 		this.description = description;
 	}
 
-	public int getRoomId() {
-		return RoomId;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setRoomId(int roomId) {
-		RoomId = roomId;
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Location getLocation() {

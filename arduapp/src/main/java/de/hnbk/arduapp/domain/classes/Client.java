@@ -1,7 +1,5 @@
 package de.hnbk.arduapp.domain.classes;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +15,7 @@ public class Client implements SimpleDaoInterface, Describable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int clientID;
+	int id;
 
 	@Column(nullable = false, length = 17, unique = true)
 	String clientMac;
@@ -35,16 +33,18 @@ public class Client implements SimpleDaoInterface, Describable {
 
 	@Override
 	public String toString() {
-		return "ID: " + clientID + " MAC: " + clientMac + " Beschreibung: " + description + " Raum: " + room
+		return "ID: " + id + " MAC: " + clientMac + " Beschreibung: " + description + " Raum: " + room
 				+ " Messart: " + measurementType;
 	}
 
-	public int getClientID() {
-		return clientID;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setClientID(int clientID) {
-		this.clientID = clientID;
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getClientMac() {

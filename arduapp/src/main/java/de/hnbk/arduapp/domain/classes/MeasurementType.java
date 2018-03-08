@@ -14,7 +14,7 @@ public class MeasurementType implements SimpleDaoInterface, Describable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "MessartID")
-	int measurementTypeId;
+	int id;
 
 	@Column(name = "Bezeichnung")
 	String description;
@@ -32,12 +32,14 @@ public class MeasurementType implements SimpleDaoInterface, Describable {
 		this.description = description;
 	}
 
-	public int getMeasurementTypeId() {
-		return measurementTypeId;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setMeasurementTypeId(int measurementTypeId) {
-		this.measurementTypeId = measurementTypeId;
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override

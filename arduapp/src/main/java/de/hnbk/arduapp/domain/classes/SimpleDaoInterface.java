@@ -2,6 +2,8 @@ package de.hnbk.arduapp.domain.classes;
 
 public interface SimpleDaoInterface {
 
-	String getDescriptionLabelText();
+	int getId();
+	
+	void setId(int id);
 	
 }

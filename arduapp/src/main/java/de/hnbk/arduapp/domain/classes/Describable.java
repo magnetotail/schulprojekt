@@ -8,4 +8,6 @@ public interface Describable {
 	
 	public String getDescriptionCheckRegex();
 
+	String getDescriptionLabelText();
+
 }

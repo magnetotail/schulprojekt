@@ -13,11 +13,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Messung")
-public class Measurement {
+public class Measurement  implements SimpleDaoInterface{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int measurementID;
+	int id;
 
 	@Column(nullable = false)
 	Timestamp measurementTime;
@@ -27,12 +27,14 @@ public class Measurement {
 	@JoinColumn(name = "ClientID", nullable = false)
 	Client client;
 	
-	public int getMeasurementID() {
-		return measurementID;
+	@Override
+	public int getId() {
+		return id;
 	}
 
-	public void setMeasurementID(int measurementID) {
-		this.measurementID = measurementID;
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Timestamp getMeasurementTime() {

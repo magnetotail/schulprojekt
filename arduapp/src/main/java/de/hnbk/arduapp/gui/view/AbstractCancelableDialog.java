@@ -45,7 +45,6 @@ public abstract class AbstractCancelableDialog extends JDialog {
 		setModal(true);
 		Container contentPane = getContentPane();
 		this.setLayout(new BorderLayout());
-		BorderLayout layout = (BorderLayout) getLayout();
 		componentPanelPanel = new JPanel();
 		double[] colsComponents = { OUTER_PADDING, TableLayout.FILL, OUTER_PADDING };
 		double[] rowsComponents = { OUTER_PADDING, OUTER_PADDING };
@@ -95,6 +94,12 @@ public abstract class AbstractCancelableDialog extends JDialog {
 		pack();
 	}
 
+	/**
+	 * Appends a panel to the end of the dialog.
+	 * The panel will get the constraint {@link TableLayout.PREFFERED}
+	 * 
+	 * @param componentPanel panel to append to the dialog
+	 */
 	protected void addComponentPanel(JPanel componentPanel) {
 		addComponentPanel(componentPanel, TableLayout.PREFERRED);
 	}

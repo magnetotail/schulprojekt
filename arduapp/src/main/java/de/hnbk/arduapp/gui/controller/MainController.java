@@ -26,7 +26,6 @@ import de.hnbk.arduapp.domain.repositories.ClientRepository;
 import de.hnbk.arduapp.domain.repositories.LocationRepository;
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
-import de.hnbk.arduapp.gui.AppModel;
 import de.hnbk.arduapp.gui.view.ClientInfoInputDialog;
 import de.hnbk.arduapp.gui.view.MainFrame;
 
@@ -50,14 +49,14 @@ public class MainController {
 	@Autowired
 	private ConfigurableApplicationContext context;
 
-	private AppModel model;
+//	private AppModel model;
 
 	private MainFrame frame;
 
 	
 	public MainController() {
 		frame = new MainFrame();
-		model = new AppModel();
+//		model = new AppModel();
 	}
 
 	@PostConstruct

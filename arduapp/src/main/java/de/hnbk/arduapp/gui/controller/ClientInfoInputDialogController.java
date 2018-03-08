@@ -3,23 +3,23 @@ package de.hnbk.arduapp.gui.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 
 import org.springframework.context.ConfigurableApplicationContext;
 
 import de.hnbk.arduapp.domain.classes.MeasurementType;
+import de.hnbk.arduapp.domain.repositories.LocationRepository;
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
 import de.hnbk.arduapp.gui.view.AbstractCancelableDialog;
-import de.hnbk.arduapp.gui.view.AbstractDaoDialog;
-import de.hnbk.arduapp.gui.view.RoomDialog;
 import de.hnbk.arduapp.gui.view.ClientInfoInputDialog;
+import de.hnbk.arduapp.gui.view.DaoDialog;
+import de.hnbk.arduapp.gui.view.RoomDialog;
 
 public class ClientInfoInputDialogController {
 
-	private static Logger logger = Logger.getLogger(ClientInfoInputDialogController.class.getName());
+//	private static Logger logger = Logger.getLogger(ClientInfoInputDialogController.class.getName());
 	
 	private ConfigurableApplicationContext context;
 	
@@ -39,7 +39,7 @@ public class ClientInfoInputDialogController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				AbstractCancelableDialog roomDialog = new RoomDialog(dialog, context.getBean(RoomRepository.class));
+				AbstractCancelableDialog roomDialog = new RoomDialog(dialog, context.getBean(RoomRepository.class), context.getBean(LocationRepository.class));
 				roomDialog.setVisible(true);
 			}
 		});
@@ -49,7 +49,7 @@ public class ClientInfoInputDialogController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MeasurementTypeRepository measureRepo =  context.getBean(MeasurementTypeRepository.class);
-				AbstractDaoDialog<MeasurementType> daoDialog = new AbstractDaoDialog<>(dialog, measureRepo, MeasurementType.class);
+				DaoDialog<MeasurementType> daoDialog = new DaoDialog<>(dialog, measureRepo, MeasurementType.class);
 				daoDialog.setVisible(true);
 				DefaultComboBoxModel<MeasurementType> boxModel = (DefaultComboBoxModel<MeasurementType>) dialog.getMeasurementTypeCombobox().getModel();
 				boxModel.removeAllElements();

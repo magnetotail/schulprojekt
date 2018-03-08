@@ -1,8 +1,5 @@
 package de.hnbk.arduapp;
 
-import java.awt.Dimension;
-import java.util.Arrays;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
@@ -13,8 +10,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.StandardEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
@@ -44,6 +39,7 @@ public class ArduApplication implements ApplicationRunner {
 //		app.run(args);
 		System.out.println(UIManager.getSystemLookAndFeelClassName());
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+		System.out.println(void.class.getName());
 		splashscreen = new JFrame("SPLASH");
 		JLabel splushlabel = new JLabel("SPLUSH");
 		splashscreen.add(splushlabel);

@@ -2,10 +2,7 @@ package de.hnbk.arduapp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Enumeration;
-
-import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
@@ -34,7 +31,6 @@ public class TwoWaySerialComm {
                 serialPort.setSerialPortParams(9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
                 InputStream in = serialPort.getInputStream();
-                OutputStream out = serialPort.getOutputStream();
                 
                 (new Thread(new SerialReader(in))).start();
 
@@ -76,7 +72,8 @@ public class TwoWaySerialComm {
 
     public static void main ( String[] args )
     {
-    	Enumeration<CommPortIdentifier> foo = CommPortIdentifier.getPortIdentifiers();
+    	@SuppressWarnings("unchecked")
+		Enumeration<CommPortIdentifier> foo = CommPortIdentifier.getPortIdentifiers();
     	while(foo.hasMoreElements()) {
     		System.out.println(foo.nextElement().getName());
     	}

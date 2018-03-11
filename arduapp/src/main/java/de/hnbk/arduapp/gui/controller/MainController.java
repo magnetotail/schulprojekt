@@ -9,15 +9,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -42,6 +41,7 @@ import de.hnbk.arduapp.gui.view.MainFrame;
 public class MainController {
 
 	private static Logger logger = Logger.getLogger(MainController.class.getName());
+	
 
 	@Autowired
 	private RoomRepository roomRepo;
@@ -69,12 +69,12 @@ public class MainController {
 	@PostConstruct
 	private void init() {
 		if (SystemTray.isSupported()) {
-			logger.log(Level.FINE, "Systemtray supported, creating entry");
+			logger.log(Level.DEBUG, "Systemtray supported, creating entry");
 			SystemTray tray = SystemTray.getSystemTray();
 			try {
 				tray.add(new TrayIcon(new BufferedImage(2, 2, BufferedImage.TYPE_3BYTE_BGR)));
 			} catch (AWTException e) {
-				logger.log(Level.SEVERE, "Error while creating Systemtray icon");
+				logger.log(Level.FATAL, "Error while creating Systemtray icon");
 				e.printStackTrace();
 			}
 		}
@@ -83,16 +83,7 @@ public class MainController {
 			initFrame();
 			initApplication();
 			frame.setVisible(true);
-			ScheduledFuture<?> f = threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 10, 50, TimeUnit.SECONDS);
-			while (f.getDelay(TimeUnit.SECONDS) > 0) {
-				System.out.println(f.getDelay(TimeUnit.SECONDS));
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 10, 50, TimeUnit.SECONDS);
 			ArduApplication.closeSplashscreen();
 		} catch (IOException e) {
 			e.printStackTrace();

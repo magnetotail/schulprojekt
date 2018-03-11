@@ -45,4 +45,12 @@ public class Measurement  implements SimpleDaoInterface{
 		this.measurementTime = measurementTime;
 	}
 
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 }

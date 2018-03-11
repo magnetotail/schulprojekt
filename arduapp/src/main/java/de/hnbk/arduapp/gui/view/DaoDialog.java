@@ -13,6 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -22,12 +25,12 @@ import info.clearthought.layout.TableLayout;
 
 /**
  * Class to select a DAO. After closing the item can be obtained by invoking
- * {@link DaoDialog#getGeneratedItem()}
+ * {@link DaoDialog#getSelectedItem()}
  * 
  * @author magnetotail
  * @param <DAO>
  */
-public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends AbstractCancelableDialog {
+public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends AbstractCheckableDialog {
 
 	/**
 	 * 
@@ -119,6 +122,17 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 		JScrollPane listPanel = new JScrollPane(itemList);
 		listPanel.setPreferredSize(new Dimension(150, 50));
 		componentPanel.add(listPanel, "0,0 0,2");
+		itemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		itemList.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(!e.getValueIsAdjusting()) {
+					selectedItem = itemList.getSelectedValue();
+				}
+			}
+		});
 
 		itemList.addMouseListener(new MouseAdapter() {
 			@Override
@@ -165,7 +179,7 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 	 * 
 	 * @return item that was selected in the itemlist before the dialog was closed
 	 */
-	public DAO getGeneratedItem() {
+	public DAO getSelectedItem() {
 		return selectedItem;
 	}
 }

@@ -20,13 +20,11 @@ public class MainFrame extends JFrame {
 	}
 
 	private void init() {
-		System.out.println(void.class.getName());
 		double[] cols = {TableLayout.PREFERRED, 10, TableLayout.PREFERRED};
 		double[] rows = {25, 10, 25, TableLayout.PREFERRED};
 		this.setLayout(new TableLayout(cols,rows));
 		testButton = new JButton("Test");
 		getContentPane().add(testButton, "0,0");
-		
 	}
 
 	public JButton getTestButton() {

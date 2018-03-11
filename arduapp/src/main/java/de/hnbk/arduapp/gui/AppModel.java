@@ -6,34 +6,36 @@ import java.util.List;
 
 import de.hnbk.arduapp.domain.classes.Client;
 import de.hnbk.arduapp.domain.classes.Measurement;
-import de.hnbk.arduapp.domain.classes.Room;
 
 public class AppModel {
+
 	
-	private Room room;
+	private static AppModel INSTANCE;
 	private Client client;
 	private List<Measurement> measurements;
 	
-	public AppModel(Room room, Client client) {
-		this.room = room;
-		this.client = client;
-		measurements = Collections.synchronizedList(new ArrayList<>());
+	static {
+		INSTANCE = new AppModel();
 	}
 	
-	public AppModel() {
-		this (null, null);
+	private AppModel() {
+		measurements = Collections.synchronizedList(new ArrayList<>());
 	}
 
-	public Room getRoom() {
-		return room;
-	}
-
-	public Client getClient() {
+	public synchronized Client getClient() {
 		return client;
 	}
 
 	public List<Measurement> getMeasurements() {
 		return measurements;
+	}
+
+	public static AppModel getInstance() {
+		return INSTANCE;
+	}
+
+	public synchronized void setClient(Client client) {
+		this.client = client;
 	};
 	
 

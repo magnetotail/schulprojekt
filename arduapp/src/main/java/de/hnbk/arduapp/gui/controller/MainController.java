@@ -1,10 +1,17 @@
 package de.hnbk.arduapp.gui.controller;
 
+import java.awt.AWTException;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +33,9 @@ import de.hnbk.arduapp.domain.repositories.ClientRepository;
 import de.hnbk.arduapp.domain.repositories.LocationRepository;
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
-import de.hnbk.arduapp.gui.view.ClientInfoInputDialog;
+import de.hnbk.arduapp.gui.AppModel;
+import de.hnbk.arduapp.gui.view.AbstractCheckableDialog.CancelType;
+import de.hnbk.arduapp.gui.view.ClientDialog;
 import de.hnbk.arduapp.gui.view.MainFrame;
 
 @Controller
@@ -42,36 +51,54 @@ public class MainController {
 
 	@Autowired
 	private MeasurementTypeRepository measurementTypeRepo;
-	
+
 	@Autowired
 	private LocationRepository locationRepo;
 
 	@Autowired
 	private ConfigurableApplicationContext context;
 
-//	private AppModel model;
+	ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1);
 
 	private MainFrame frame;
 
-	
 	public MainController() {
 		frame = new MainFrame();
-//		model = new AppModel();
 	}
 
 	@PostConstruct
 	private void init() {
+		if (SystemTray.isSupported()) {
+			logger.log(Level.FINE, "Systemtray supported, creating entry");
+			SystemTray tray = SystemTray.getSystemTray();
+			try {
+				tray.add(new TrayIcon(new BufferedImage(2, 2, BufferedImage.TYPE_3BYTE_BGR)));
+			} catch (AWTException e) {
+				logger.log(Level.SEVERE, "Error while creating Systemtray icon");
+				e.printStackTrace();
+			}
+		}
 		try {
 			initRepos();
-			initApplication();
 			initFrame();
-			System.out.println(context.getBean(RoomRepository.class).count());
+			initApplication();
 			frame.setVisible(true);
+			ScheduledFuture<?> f = threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 10, 50, TimeUnit.SECONDS);
+			while (f.getDelay(TimeUnit.SECONDS) > 0) {
+				System.out.println(f.getDelay(TimeUnit.SECONDS));
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			ArduApplication.closeSplashscreen();
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
 			ArduApplication.closeSplashscreen();
+			System.exit(0);
 		}
 	}
 
@@ -84,12 +111,16 @@ public class MainController {
 		Client currentClient = clientRepo.findClientByClientMac(macAddress);
 		if (currentClient == null) { // There is no Configuration for the current client in the database
 			logger.log(Level.INFO, "No client configuration found, creating new one");
-//			ClientInfoInputDialog infoDialog = new ClientInfoInputDialog(frame);
-//			infoDialog.setVisible(true);
-//			currentClient = infoDialog.getConstructedClient();
-//			currentClient.setClientMac(macAddress);
-//			clientRepo.save(currentClient);
+			ClientDialog infoDialog = new ClientDialog(frame, CancelType.NOT_CANCELLABLE);
+			ClientDialogController controller = new ClientDialogController(context, infoDialog);
+			ArduApplication.closeSplashscreen();
+			controller.start();
+			currentClient = controller.getConstructedClient();
+			currentClient.setClientMac(macAddress);
+			clientRepo.save(currentClient);
 		}
+		AppModel.getInstance().setClient(currentClient);
+		logger.log(Level.INFO, "Set client to '" + currentClient + "'");
 	}
 
 	private void initFrame() {
@@ -97,35 +128,33 @@ public class MainController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				roomRepo.findAll().forEach(System.out::println);
-				ClientInfoInputDialog inputDialog = new ClientInfoInputDialog(frame);
-				ClientInfoInputDialogController controller = new ClientInfoInputDialogController(context, inputDialog);
+				ClientDialog inputDialog = new ClientDialog(frame);
+				ClientDialogController controller = new ClientDialogController(context, inputDialog, AppModel.getInstance().getClient());
 				controller.start();
-				
+
 			}
 		});
 
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				super.windowClosing(e);
 				context.close();
 			}
 		});
 	}
-	
+
 	private void initRepos() {
 		initMeasurementTypeRepo();
 		initRoomRepo();
 	}
-	
+
 	private void initMeasurementTypeRepo() {
 		MeasurementType type = new MeasurementType();
 		type.setDescription("Temperatur");
 		measurementTypeRepo.save(type);
 		logger.log(Level.INFO, "Anzahl Messarten: " + measurementTypeRepo.count());
 	}
-	
+
 	private void initRoomRepo() {
 		Location loc = new Location();
 		loc.setDescription("Frankenstraße");
@@ -135,7 +164,7 @@ public class MainController {
 		room.setLocation(loc);
 		roomRepo.save(room);
 		logger.log(Level.INFO, "Anzahl Räume: " + roomRepo.count());
-		
+
 	}
 
 }

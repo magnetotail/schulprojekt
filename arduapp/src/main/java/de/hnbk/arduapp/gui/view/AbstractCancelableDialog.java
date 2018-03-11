@@ -20,7 +20,11 @@ import javax.swing.JPanel;
 import info.clearthought.layout.TableLayout;
 
 @SuppressWarnings("serial")
-public abstract class AbstractCancelableDialog extends JDialog {
+public abstract class AbstractCheckableDialog extends JDialog {
+
+	public enum CancelType {
+		CANCELLABLE, NOT_CANCELLABLE
+	}
 
 	private JButton okButton;
 	private boolean wasCanceled = true;
@@ -28,14 +32,25 @@ public abstract class AbstractCancelableDialog extends JDialog {
 
 	private JPanel componentPanelPanel;
 	private List<CloseAction> closeActionList = new ArrayList<CloseAction>();
+	private CancelType cancelType;
 
-	public AbstractCancelableDialog(JFrame owner) {
+	public AbstractCheckableDialog(JFrame owner) {
+		this(owner, CancelType.CANCELLABLE);
+	}
+
+	public AbstractCheckableDialog(JDialog owner) {
+		this(owner, CancelType.CANCELLABLE);
+	}
+
+	public AbstractCheckableDialog(JFrame owner, CancelType cancelType) {
 		super(owner);
+		this.cancelType = cancelType;
 		initDialog();
 	}
 
-	public AbstractCancelableDialog(JDialog owner) {
+	public AbstractCheckableDialog(JDialog owner, CancelType cancelType) {
 		super(owner);
+		this.cancelType = cancelType;
 		initDialog();
 	}
 
@@ -48,20 +63,35 @@ public abstract class AbstractCancelableDialog extends JDialog {
 		componentPanelPanel = new JPanel();
 		double[] colsComponents = { OUTER_PADDING, TableLayout.FILL, OUTER_PADDING };
 		double[] rowsComponents = { OUTER_PADDING, OUTER_PADDING };
-		
+
 		componentPanelPanel.setLayout(new TableLayout(colsComponents, rowsComponents));
 		contentPane.add(componentPanelPanel, BorderLayout.CENTER);
 		JPanel buttonPanel = new JPanel();
 
-		double[] colsButtons = { OUTER_PADDING, TableLayout.FILL, COMPONENT_GAP_BIG, TableLayout.FILL, OUTER_PADDING };
+		double[] colsButtons;
+		if (cancelType == CancelType.CANCELLABLE) {
+			colsButtons = new double[] { OUTER_PADDING, TableLayout.FILL, COMPONENT_GAP_BIG, TableLayout.FILL, OUTER_PADDING };
+		} else {
+			colsButtons = new double[] { OUTER_PADDING, TableLayout.FILL, OUTER_PADDING };
+		}
 		double[] rowsButtons = { TableLayout.FILL };
 		buttonPanel.setLayout(new TableLayout(colsButtons, rowsButtons));
 
 		okButton = new JButton("OK");
 		buttonPanel.add(okButton, "1,0");
 
-		cancelButton = new JButton("Abbrechen");
-		buttonPanel.add(cancelButton, "3,0");
+		if (cancelType == CancelType.CANCELLABLE) {
+			cancelButton = new JButton("Abbrechen");
+			buttonPanel.add(cancelButton, "3,0");
+
+			cancelButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					close(true);
+				}
+			});
+		}
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -69,7 +99,9 @@ public abstract class AbstractCancelableDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				close(true);
+				if (cancelType == CancelType.CANCELLABLE) {
+					close(true);
+				}
 			}
 
 		});
@@ -83,35 +115,27 @@ public abstract class AbstractCancelableDialog extends JDialog {
 			}
 		});
 
-		cancelButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				close(true);
-			}
-		});
-
 		pack();
 	}
 
 	/**
-	 * Appends a panel to the end of the dialog.
-	 * The panel will get the constraint {@link TableLayout.PREFFERED}
+	 * Appends a panel to the end of the dialog. The panel will get the constraint
+	 * {@link TableLayout.PREFFERED}
 	 * 
 	 * @param componentPanel panel to append to the dialog
 	 */
 	protected void addComponentPanel(JPanel componentPanel) {
 		addComponentPanel(componentPanel, TableLayout.PREFERRED);
 	}
-	
+
 	public void addCloseAction(CloseAction action) {
 		closeActionList.add(action);
 	}
-	
+
 	public void removeCloseAction(CloseAction action) {
 		closeActionList.remove(action);
 	}
-	
+
 	protected void addComponentPanel(JPanel componentPanel, double rowHeight) {
 		TableLayout componentPanelPanelLayout = (TableLayout) componentPanelPanel.getLayout();
 		componentPanelPanelLayout.insertRow(1, GuiConstants.COMPONENT_GAP);
@@ -123,7 +147,7 @@ public abstract class AbstractCancelableDialog extends JDialog {
 
 	private void close(boolean wasCancelled) {
 		this.wasCanceled = wasCancelled;
-		for(CloseAction action : closeActionList) {
+		for (CloseAction action : closeActionList) {
 			action.performAction();
 		}
 		setVisible(false);

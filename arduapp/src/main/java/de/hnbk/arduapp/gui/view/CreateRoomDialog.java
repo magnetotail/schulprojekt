@@ -1,5 +1,9 @@
 package de.hnbk.arduapp.gui.view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -38,7 +42,20 @@ class CreateRoomDialog extends SimpleChangeCreationDialog<Room> {
 		locationPanel.setLayout(new TableLayout(cols, rows));
 		locationPanel.add(new JLabel("Standort"), "0,0");
 		initComboBox();
-		locationPanel.add(locationCombobox, "0,2");
+		locationPanel.add(locationCombobox, "2,0");
+		JButton addLocationButton = new JButton();
+		addLocationButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SimpleChangeCreationDialog<Location> createLocationDialog = new SimpleChangeCreationDialog<>(CreateRoomDialog.this, Location.class, locationRepository);
+				createLocationDialog.setVisible(true);
+				if(!createLocationDialog.wasCancelled()) {
+					locationCombobox.addItem(createLocationDialog.getItem());
+				}
+			}
+		});
+		locationPanel.add(addLocationButton, "4,0");
 		addComponentPanel(locationPanel);
 	}
 

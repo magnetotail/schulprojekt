@@ -18,25 +18,25 @@ import de.hnbk.arduapp.domain.repositories.RoomRepository;
 @SpringBootApplication
 @EnableJpaRepositories(basePackageClasses = RoomRepository.class)
 public class ArduApplication implements ApplicationRunner {
-	
+
 	private static JFrame splashscreen;
 
 	@Autowired
 	RoomRepository roomRepo;
-	
+
 	@Autowired
 	MeasurementTypeRepository measurementTypeRepo;
-	
+
 	@Autowired
 	ConfigurableApplicationContext context;
-	
+
 	public ArduApplication() {
-	
+
 	}
 
 	public static void main(String[] args) throws Exception {
-//		SpringApplication app = new SpringApplication(ArduApplication.class);
-//		app.run(args);
+		// SpringApplication app = new SpringApplication(ArduApplication.class);
+		// app.run(args);
 		System.out.println(UIManager.getSystemLookAndFeelClassName());
 		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
 		System.out.println(void.class.getName());
@@ -49,14 +49,18 @@ public class ArduApplication implements ApplicationRunner {
 		builder.build().run(args);
 	}
 
-
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 	}
 
-	
+	/**
+	 * Closes and disposes the splashscreen.
+	 * Multiple invocations have no effect
+	 */
 	public static void closeSplashscreen() {
-		splashscreen.setVisible(false);
-		splashscreen.dispose();
+		if (splashscreen.isVisible()) {
+			splashscreen.setVisible(false);
+			splashscreen.dispose();
+		}
 	}
 }

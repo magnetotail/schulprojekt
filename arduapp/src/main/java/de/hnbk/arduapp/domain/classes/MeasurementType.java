@@ -16,7 +16,7 @@ public class MeasurementType implements SimpleDaoInterface, Describable {
 	@Column(name = "MessartID")
 	int id;
 
-	@Column(name = "Bezeichnung")
+	@Column(name = "Bezeichnung", nullable=false)
 	String description;
 
 	@Override

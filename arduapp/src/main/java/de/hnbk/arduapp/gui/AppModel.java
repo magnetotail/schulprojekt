@@ -1,5 +1,6 @@
 package de.hnbk.arduapp.gui;
 
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ public class AppModel {
 	private Client client;
 	private List<Measurement> measurements;
 	private CommPortIdentifier comPort;
+	private Insets screenInsets;
 	
 	static {
 		INSTANCE = new AppModel();
@@ -46,6 +48,14 @@ public class AppModel {
 	
 	public synchronized void setComPort(CommPortIdentifier comPort) {
 		this.comPort = comPort;
+	}
+
+	public void setScreenInsets(Insets screenInsets) {
+		this.screenInsets = screenInsets;
+	}
+
+	public Insets getScreenInsets() {
+		return screenInsets;
 	}
 
 }

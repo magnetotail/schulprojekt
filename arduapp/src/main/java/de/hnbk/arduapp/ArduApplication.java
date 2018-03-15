@@ -1,5 +1,8 @@
 package de.hnbk.arduapp;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.Toolkit;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
@@ -14,6 +17,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
+import de.hnbk.arduapp.gui.AppModel;
+import de.hnbk.arduapp.gui.GuiUtils;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackageClasses = RoomRepository.class)
@@ -38,17 +43,23 @@ public class ArduApplication implements ApplicationRunner {
 		// SpringApplication app = new SpringApplication(ArduApplication.class);
 		// app.run(args);
 		System.out.println(UIManager.getSystemLookAndFeelClassName());
-		UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-		System.out.println(void.class.getName());
-		splashscreen = new JFrame("SPLASH");
-		JLabel splushlabel = new JLabel("SPLUSH");
-		splashscreen.add(splushlabel);
-		splashscreen.setVisible(true);
+		openSplashscreen();
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		SpringApplicationBuilder builder = new SpringApplicationBuilder(ArduApplication.class);
 		builder.headless(false);
 		builder.build().run(args);
 	}
 
+	private static void openSplashscreen() {
+		splashscreen = new JFrame("SPLASH");
+		splashscreen.setUndecorated(true);
+		splashscreen.setSize(500, 300);
+		JLabel splushlabel = new JLabel("SPLUSH");
+		splashscreen.add(splushlabel);
+		GuiUtils.centerWindow(splashscreen);
+		splashscreen.setVisible(true);
+	}
+	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 	}

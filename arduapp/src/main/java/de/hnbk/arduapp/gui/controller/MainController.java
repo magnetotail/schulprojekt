@@ -11,12 +11,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Level;
@@ -47,7 +47,6 @@ import de.hnbk.arduapp.reading.DBSaver;
 public class MainController {
 
 	private static Logger logger = Logger.getLogger(MainController.class.getName());
-	
 
 	@Autowired
 	private RoomRepository roomRepo;
@@ -68,7 +67,6 @@ public class MainController {
 
 	private MainFrame mainFrame;
 
-
 	private SerialReader reader;
 
 	public MainController() {
@@ -77,16 +75,16 @@ public class MainController {
 
 	@PostConstruct
 	private void init() {
-		initSystemTray();
 		try {
-			initRepos();
+//			initRepos();
 			initFrame();
 			reader = new SerialReader();
 			reader.start();
+			threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 2, 5, TimeUnit.MINUTES);
 			initApplication();
 			mainFrame.setVisible(true);
-			threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 10, 50, TimeUnit.SECONDS);
 			ArduApplication.closeSplashscreen();
+			initSystemTray();
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -96,27 +94,40 @@ public class MainController {
 	}
 
 	private void initSystemTray() {
-		if (SystemTray.isSupported()) {
+		if (SystemTray.isSupported()) {                     
 			logger.log(Level.DEBUG, "Systemtray supported, creating entry");
 			SystemTray tray = SystemTray.getSystemTray();
 			try {
-				TrayIcon trayIcon =new TrayIcon(new BufferedImage(20, 20, BufferedImage.TYPE_3BYTE_BGR));
+				TrayIcon trayIcon = new TrayIcon(ImageIO.read(getClass().getResource("/black-thermometer-16.png")));
 				PopupMenu popup = new PopupMenu();
 				MenuItem openItem = new MenuItem("Anwendung öffnen");
 				openItem.addActionListener(new ActionListener() {
-					
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						mainFrame.setVisible(true);
 					}
 				});
 				popup.add(openItem);
+				MenuItem closeApplicationItem = new MenuItem("Anwendung beenden");
+				closeApplicationItem.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int answer = JOptionPane.showConfirmDialog(mainFrame, "Sind Sie sicher, dass Sie die Anwendung beenden möchten?", "Anwendung beenden", JOptionPane.YES_NO_OPTION);
+						if(answer == JOptionPane.YES_OPTION) {
+							logger.log(Level.INFO, "Exiting due to user exit.");
+							System.exit(0);
+						}
+					}
+				});
+				popup.add(closeApplicationItem);
 				trayIcon.setPopupMenu(popup);
 				trayIcon.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseReleased(MouseEvent e) {
-						if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-							if(!mainFrame.isVisible()) {
+						if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+							if (!mainFrame.isVisible()) {
 								logger.log(Level.INFO, "Opening main frame.");
 								mainFrame.setVisible(true);
 							}
@@ -124,9 +135,11 @@ public class MainController {
 					}
 				});
 				tray.add(trayIcon);
-			} catch (AWTException e) {
+			} catch (AWTException | IOException e) {
 				logger.log(Level.FATAL, "Error while creating Systemtray icon", e);
 			}
+		} else {
+			logger.log(Level.INFO, "No Systemtray supported!");
 		}
 	}
 
@@ -157,7 +170,8 @@ public class MainController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ClientDialog inputDialog = new ClientDialog(mainFrame);
-				ClientDialogController controller = new ClientDialogController(context, inputDialog, AppModel.getInstance().getClient());
+				ClientDialogController controller = new ClientDialogController(context, inputDialog,
+						AppModel.getInstance().getClient());
 				controller.start();
 
 			}

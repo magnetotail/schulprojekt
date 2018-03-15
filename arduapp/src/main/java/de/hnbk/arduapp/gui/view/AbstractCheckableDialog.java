@@ -9,14 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import de.hnbk.arduapp.gui.GuiUtils;
 import info.clearthought.layout.TableLayout;
 
 @SuppressWarnings("serial")
@@ -56,6 +59,11 @@ public abstract class AbstractCheckableDialog extends JDialog {
 		setModal(true);
 		Container contentPane = getContentPane();
 		this.setLayout(new BorderLayout());
+		try {
+			setIconImage(ImageIO.read(getClass().getResource("/thermometer_icon.png")));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		componentPanelPanel = new JPanel();
 		double[] colsComponents = { OUTER_PADDING, TableLayout.FILL, OUTER_PADDING };
 		double[] rowsComponents = { OUTER_PADDING, OUTER_PADDING };
@@ -112,6 +120,7 @@ public abstract class AbstractCheckableDialog extends JDialog {
 		});
 
 		pack();
+		GuiUtils.centerWindow(this);
 	}
 
 	/**
@@ -139,6 +148,7 @@ public abstract class AbstractCheckableDialog extends JDialog {
 		componentPanelPanel.add(componentPanel, "1," + 1);
 		componentPanelPanelLayout.layoutContainer(this);
 		pack();
+		GuiUtils.centerWindow(this);
 	}
 
 	private void close(boolean wasCancelled) {

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import de.hnbk.arduapp.domain.classes.Client;
 import de.hnbk.arduapp.domain.classes.Measurement;
 import de.hnbk.arduapp.gui.AppModel;
 import de.hnbk.arduapp.gui.view.AbstractCheckableDialog;
@@ -69,11 +70,11 @@ public class SerialReader extends Thread {
 		}
 	}
 
-	// public static void main(String[] args) {
-	// SerialReader com = new SerialReader();
-	// AppModel.getInstance().setClient(new Client());
-	// com.start();
-	// }
+	public static void main(String[] args) {
+		SerialReader com = new SerialReader();
+		AppModel.getInstance().setClient(new Client());
+		com.start();
+	}
 
 	@Override
 	public void run() {
@@ -124,7 +125,7 @@ public class SerialReader extends Thread {
 						logger.log(Level.DEBUG, "Put " + count + " measurement/s into model.");
 					}
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						logger.log(Level.WARN, "Sleep was interrupted");
 					}

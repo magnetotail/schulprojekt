@@ -36,7 +36,7 @@ public class DBSaver implements Runnable {
 			logger.log(Level.INFO, "Starting save...");
 			measurementRepository.save(copiedMeasurements);
 			logger.log(Level.INFO, "Saved " + copiedMeasurements.size() + " measurements.");
-			logger.log(Level.INFO, "Clearing measurements...");
+			logger.log(Level.INFO, "Clearing cache...");
 			measurements.removeAll(copiedMeasurements);
 			logger.log(Level.INFO, "Saving successful!");
 		}catch(Exception e) {

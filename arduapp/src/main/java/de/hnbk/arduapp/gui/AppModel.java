@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.hnbk.arduapp.domain.classes.Client;
 import de.hnbk.arduapp.domain.classes.Measurement;
+import gnu.io.CommPortIdentifier;
 
 public class AppModel {
 
@@ -13,6 +14,7 @@ public class AppModel {
 	private static AppModel INSTANCE;
 	private Client client;
 	private List<Measurement> measurements;
+	private CommPortIdentifier comPort;
 	
 	static {
 		INSTANCE = new AppModel();
@@ -36,7 +38,14 @@ public class AppModel {
 
 	public synchronized void setClient(Client client) {
 		this.client = client;
+	}
+
+	public synchronized CommPortIdentifier getComPort() {
+		return comPort;
 	};
 	
+	public synchronized void setComPort(CommPortIdentifier comPort) {
+		this.comPort = comPort;
+	}
 
 }

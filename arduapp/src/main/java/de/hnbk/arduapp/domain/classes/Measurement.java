@@ -21,7 +21,9 @@ public class Measurement  implements SimpleDaoInterface{
 
 	@Column(nullable = false)
 	Timestamp measurementTime;
-	
+
+	@Column(nullable = false)
+	double value;
 	
 	@ManyToOne(targetEntity = Client.class)
 	@JoinColumn(name = "ClientID", nullable = false)
@@ -51,6 +53,19 @@ public class Measurement  implements SimpleDaoInterface{
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
+	}
+	
+	@Override
+	public String toString() {
+		return "Wert: " + value + " Messart: " + client.getMeasurementType();
 	}
 
 }

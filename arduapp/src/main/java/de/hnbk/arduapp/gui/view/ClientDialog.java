@@ -98,4 +98,8 @@ public class ClientDialog extends AbstractCheckableDialog {
 	public JButton getConfigureTypesButton() {
 		return configureTypesButton;
 	}
+
+	public String getClientDescription() {
+		return clientDescriptionField.getText();
+	}
 }

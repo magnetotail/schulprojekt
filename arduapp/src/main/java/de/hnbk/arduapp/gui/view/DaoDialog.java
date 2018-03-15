@@ -144,7 +144,7 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 			}
 		});
 
-		createButton = new JButton();
+		createButton = new JButton("+");
 
 		createButton.addActionListener(new ActionListener() {
 

@@ -73,6 +73,10 @@ public class ClientDialogController {
 	}
 
 	public Client getConstructedClient() {
+		if(client == null) {
+			client = new Client();
+		}
+		client.setDescription(dialog.getClientDescription());;
 		return client;
 	}
 	

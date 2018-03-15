@@ -1,10 +1,14 @@
 package de.hnbk.arduapp.gui.controller;
 
 import java.awt.AWTException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import de.hnbk.arduapp.AddressResolver;
 import de.hnbk.arduapp.AddressResolver.AddressType;
 import de.hnbk.arduapp.ArduApplication;
+import de.hnbk.arduapp.SerialReader;
 import de.hnbk.arduapp.domain.classes.Client;
 import de.hnbk.arduapp.domain.classes.Location;
 import de.hnbk.arduapp.domain.classes.MeasurementType;
@@ -33,9 +38,10 @@ import de.hnbk.arduapp.domain.repositories.LocationRepository;
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
 import de.hnbk.arduapp.gui.AppModel;
-import de.hnbk.arduapp.gui.view.AbstractCheckableDialog.CancelType;
+import de.hnbk.arduapp.gui.view.CancelType;
 import de.hnbk.arduapp.gui.view.ClientDialog;
 import de.hnbk.arduapp.gui.view.MainFrame;
+import de.hnbk.arduapp.reading.DBSaver;
 
 @Controller
 public class MainController {
@@ -60,29 +66,25 @@ public class MainController {
 
 	ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(1);
 
-	private MainFrame frame;
+	private MainFrame mainFrame;
+
+
+	private SerialReader reader;
 
 	public MainController() {
-		frame = new MainFrame();
+		mainFrame = new MainFrame();
 	}
 
 	@PostConstruct
 	private void init() {
-		if (SystemTray.isSupported()) {
-			logger.log(Level.DEBUG, "Systemtray supported, creating entry");
-			SystemTray tray = SystemTray.getSystemTray();
-			try {
-				tray.add(new TrayIcon(new BufferedImage(2, 2, BufferedImage.TYPE_3BYTE_BGR)));
-			} catch (AWTException e) {
-				logger.log(Level.FATAL, "Error while creating Systemtray icon");
-				e.printStackTrace();
-			}
-		}
+		initSystemTray();
 		try {
 			initRepos();
 			initFrame();
+			reader = new SerialReader();
+			reader.start();
 			initApplication();
-			frame.setVisible(true);
+			mainFrame.setVisible(true);
 			threadPoolExecutor.scheduleAtFixedRate(new DBSaver(context), 10, 50, TimeUnit.SECONDS);
 			ArduApplication.closeSplashscreen();
 		} catch (IOException e) {
@@ -90,6 +92,41 @@ public class MainController {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
 			ArduApplication.closeSplashscreen();
 			System.exit(0);
+		}
+	}
+
+	private void initSystemTray() {
+		if (SystemTray.isSupported()) {
+			logger.log(Level.DEBUG, "Systemtray supported, creating entry");
+			SystemTray tray = SystemTray.getSystemTray();
+			try {
+				TrayIcon trayIcon =new TrayIcon(new BufferedImage(20, 20, BufferedImage.TYPE_3BYTE_BGR));
+				PopupMenu popup = new PopupMenu();
+				MenuItem openItem = new MenuItem("Anwendung öffnen");
+				openItem.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						mainFrame.setVisible(true);
+					}
+				});
+				popup.add(openItem);
+				trayIcon.setPopupMenu(popup);
+				trayIcon.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						if(e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+							if(!mainFrame.isVisible()) {
+								logger.log(Level.INFO, "Opening main frame.");
+								mainFrame.setVisible(true);
+							}
+						}
+					}
+				});
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				logger.log(Level.FATAL, "Error while creating Systemtray icon", e);
+			}
 		}
 	}
 
@@ -102,7 +139,7 @@ public class MainController {
 		Client currentClient = clientRepo.findClientByClientMac(macAddress);
 		if (currentClient == null) { // There is no Configuration for the current client in the database
 			logger.log(Level.INFO, "No client configuration found, creating new one");
-			ClientDialog infoDialog = new ClientDialog(frame, CancelType.NOT_CANCELLABLE);
+			ClientDialog infoDialog = new ClientDialog(mainFrame, CancelType.NOT_CANCELLABLE);
 			ClientDialogController controller = new ClientDialogController(context, infoDialog);
 			ArduApplication.closeSplashscreen();
 			controller.start();
@@ -115,21 +152,21 @@ public class MainController {
 	}
 
 	private void initFrame() {
-		frame.getTestButton().addActionListener(new ActionListener() {
+		mainFrame.getTestButton().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ClientDialog inputDialog = new ClientDialog(frame);
+				ClientDialog inputDialog = new ClientDialog(mainFrame);
 				ClientDialogController controller = new ClientDialogController(context, inputDialog, AppModel.getInstance().getClient());
 				controller.start();
 
 			}
 		});
 
-		frame.addWindowListener(new WindowAdapter() {
+		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				context.close();
+				mainFrame.setVisible(false);
 			}
 		});
 	}

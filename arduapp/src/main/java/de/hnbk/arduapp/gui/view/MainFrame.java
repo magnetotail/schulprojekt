@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 	private JButton testButton;
 	
 	public MainFrame() {
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		init();
 	}
 

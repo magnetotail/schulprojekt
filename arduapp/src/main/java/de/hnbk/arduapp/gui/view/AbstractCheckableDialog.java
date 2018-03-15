@@ -22,10 +22,6 @@ import info.clearthought.layout.TableLayout;
 @SuppressWarnings("serial")
 public abstract class AbstractCheckableDialog extends JDialog {
 
-	public enum CancelType {
-		CANCELLABLE, NOT_CANCELLABLE
-	}
-
 	private JButton okButton;
 	private boolean wasCanceled = true;
 	private JButton cancelButton;

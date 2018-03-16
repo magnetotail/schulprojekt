@@ -11,7 +11,7 @@ import de.hnbk.arduapp.domain.classes.Measurement;
 import de.hnbk.arduapp.domain.repositories.MeasurementRepository;
 import de.hnbk.arduapp.gui.AppModel;
 
-public class DBSaver implements Runnable {
+public class DBSaver extends Thread {
 
 	private ConfigurableApplicationContext context;
 

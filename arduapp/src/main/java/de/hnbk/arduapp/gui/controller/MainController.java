@@ -84,6 +84,7 @@ public class MainController {
 			initApplication();
 			mainFrame.setVisible(true);
 			ArduApplication.closeSplashscreen();
+			new DialogUpdater().start();
 			initSystemTray();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -94,7 +95,7 @@ public class MainController {
 	}
 
 	private void initSystemTray() {
-		if (SystemTray.isSupported()) {                     
+		if (SystemTray.isSupported()) {
 			logger.log(Level.DEBUG, "Systemtray supported, creating entry");
 			SystemTray tray = SystemTray.getSystemTray();
 			try {
@@ -111,11 +112,13 @@ public class MainController {
 				popup.add(openItem);
 				MenuItem closeApplicationItem = new MenuItem("Anwendung beenden");
 				closeApplicationItem.addActionListener(new ActionListener() {
-					
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						int answer = JOptionPane.showConfirmDialog(mainFrame, "Sind Sie sicher, dass Sie die Anwendung beenden möchten?", "Anwendung beenden", JOptionPane.YES_NO_OPTION);
-						if(answer == JOptionPane.YES_OPTION) {
+						int answer = JOptionPane.showConfirmDialog(mainFrame,
+								"Sind Sie sicher, dass Sie die Anwendung beenden möchten?", "Anwendung beenden",
+								JOptionPane.YES_NO_OPTION);
+						if (answer == JOptionPane.YES_OPTION) {
 							logger.log(Level.INFO, "Exiting due to user exit.");
 							System.exit(0);
 						}
@@ -144,6 +147,7 @@ public class MainController {
 	}
 
 	private void initApplication() throws IOException {
+		Runtime.getRuntime().addShutdownHook(new DBSaver(context));
 		String macAddress = AddressResolver.getAddress(AddressType.MAC);
 		if (macAddress == null) {
 			throw new IOException("No MAC-Address found. Make sure the computer is connected to a Network.");
@@ -207,6 +211,23 @@ public class MainController {
 		roomRepo.save(room);
 		logger.log(Level.INFO, "Anzahl Räume: " + roomRepo.count());
 
+	}
+
+	private class DialogUpdater extends Thread {
+
+		@Override
+		public void run() {
+			try {
+				while (true) {
+					synchronized (AppModel.getInstance().getMeasurements()) {
+						AppModel.getInstance().getMeasurements().wait();
+					}
+					mainFrame.getCachedCountLabel().setText("" + AppModel.getInstance().getMeasurements().size());
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

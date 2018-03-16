@@ -65,9 +65,12 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 	/**
 	 * Creates a dialog to select a DAO.
 	 * 
-	 * @param owner owner of the dialog
-	 * @param repository repository of the DAOs to display
-	 * @param type type of the DAOs to display
+	 * @param owner
+	 *            owner of the dialog
+	 * @param repository
+	 *            repository of the DAOs to display
+	 * @param type
+	 *            type of the DAOs to display
 	 */
 	public DaoDialog(JDialog owner, CrudRepository<DAO, Integer> repository, Class<DAO> type) {
 		super(owner);
@@ -79,9 +82,12 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 	/**
 	 * Creates a dialog to select a DAO.
 	 * 
-	 * @param owner owner of the dialog
-	 * @param repository repository of the DAOs to display
-	 * @param type type of the DAOs to display
+	 * @param owner
+	 *            owner of the dialog
+	 * @param repository
+	 *            repository of the DAOs to display
+	 * @param type
+	 *            type of the DAOs to display
 	 */
 	public DaoDialog(JFrame owner, CrudRepository<DAO, Integer> repository, Class<DAO> type) {
 		super(owner);
@@ -107,13 +113,10 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 		setResizable(false);
 		JPanel componentPanel = new JPanel();
 
-		//@formatter:off
-		double[] cols = { TableLayout.FILL, GuiConstants.COMPONENT_GAP,	GuiConstants.SMALL_BUTTON_LENGTH };
-		double[] rows = { 	GuiConstants.COMPONENT_HEIGHT, 
-							GuiConstants.COMPONENT_GAP, 
-							TableLayout.FILL 
-							};
-		//@formatter:on
+		// @formatter:off
+		double[] cols = { TableLayout.FILL, GuiConstants.COMPONENT_GAP, GuiConstants.SMALL_BUTTON_LENGTH };
+		double[] rows = { GuiConstants.COMPONENT_HEIGHT, GuiConstants.COMPONENT_GAP, TableLayout.FILL };
+		// @formatter:on
 
 		componentPanel.setLayout(new TableLayout(cols, rows));
 
@@ -123,12 +126,12 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 		listPanel.setPreferredSize(new Dimension(150, 50));
 		componentPanel.add(listPanel, "0,0 0,2");
 		itemList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+
 		itemList.addListSelectionListener(new ListSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				if(!e.getValueIsAdjusting()) {
+				if (!e.getValueIsAdjusting()) {
 					selectedItem = itemList.getSelectedValue();
 				}
 			}
@@ -165,8 +168,10 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 	protected void refreshList() {
 		DefaultListModel<DAO> listModel = (DefaultListModel<DAO>) itemList.getModel();
 		listModel.clear();
-		for (DAO item : repository.findAll()) {
-			listModel.addElement(item);
+		if (repository.count() > 0) {
+			for (DAO item : repository.findAll()) {
+				listModel.addElement(item);
+			}
 		}
 	}
 
@@ -182,4 +187,5 @@ public class DaoDialog<DAO extends SimpleDaoInterface & Describable> extends Abs
 	public DAO getSelectedItem() {
 		return selectedItem;
 	}
+	
 }

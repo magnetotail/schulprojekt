@@ -37,7 +37,7 @@ public class SerialReader extends Thread {
 	private Logger logger = Logger.getLogger(SerialReader.class.getName());
 
 	private CommPort commPort;
-
+	
 	public SerialReader() {
 		super("Serial Read Thread");
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -123,6 +123,9 @@ public class SerialReader extends Thread {
 							}
 						}
 						logger.log(Level.DEBUG, "Put " + count + " measurement/s into model.");
+						synchronized (AppModel.getInstance().getMeasurements()) {
+							AppModel.getInstance().getMeasurements().notifyAll();
+						}
 					}
 					try {
 						Thread.sleep(1000);

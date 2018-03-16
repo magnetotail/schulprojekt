@@ -1,8 +1,8 @@
 package de.hnbk.arduapp;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.Toolkit;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
@@ -17,7 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import de.hnbk.arduapp.domain.repositories.MeasurementTypeRepository;
 import de.hnbk.arduapp.domain.repositories.RoomRepository;
-import de.hnbk.arduapp.gui.AppModel;
 import de.hnbk.arduapp.gui.GuiUtils;
 
 @SpringBootApplication
@@ -53,6 +52,11 @@ public class ArduApplication implements ApplicationRunner {
 	private static void openSplashscreen() {
 		splashscreen = new JFrame("SPLASH");
 		splashscreen.setUndecorated(true);
+		try {
+			splashscreen.setContentPane(new ImagePanel(ImageIO.read(ArduApplication.class.getResource("/splash.png"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		splashscreen.setSize(500, 300);
 		JLabel splushlabel = new JLabel("SPLUSH");
 		splashscreen.add(splushlabel);
